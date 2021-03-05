@@ -12,6 +12,7 @@
         :index="index"
         :key="movie.id"
         v-on:show-popup="showPopup"
+        v-on:show-movie="openCurrentItem"
       />
     </div>
   </div>
@@ -32,9 +33,13 @@ export default Vue.extend({
     movies: Array,
   },
   methods: {
-    showPopup(index: number) {
-      this.$emit("show-popup", true, index);
+    showPopup() {
+      this.$emit("show-popup", true);
     },
+    openCurrentItem(currentItem: object) {
+      console.log(currentItem);
+      this.$emit("show-movie", currentItem);
+    }
   },
 });
 </script>

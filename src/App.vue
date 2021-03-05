@@ -1,13 +1,13 @@
 <template>
   <div id="app">
-    <MovieList v-on:show-popup="showPopup" :movies="movies" />
+    <MovieList v-on:show-popup="showPopup" v-on:show-movie="openCurrentItem" :movies="movies" />
     <Popup v-on:show-popup="showPopup" v-if="isVisiblePopup">
        <MovieItem
-          :title="this.movies[this.movieIndex].title"
-          :overview="this.movies[this.movieIndex].overview"
-          :poster_path="this.movies[this.movieIndex].poster_path"
-          :count="this.movies[this.movieIndex].count"
-          :id="this.movies[this.movieIndex].id"
+          :title="this.currentItem.title"
+          :overview="this.currentItem.overview"
+          :poster_path="this.currentItem.poster_path"
+          :count="this.currentItem.count"
+          :id="this.currentItem.id"
           :isFullScreenView="true"
           :isShowBtnInfo="false"
         />
@@ -33,7 +33,7 @@ export default Vue.extend({
     return {
       movies: [],
       isVisiblePopup: false,
-      movieIndex: Number
+      currentItem: Object
     };
   },
   mounted() {
@@ -42,7 +42,11 @@ export default Vue.extend({
         "https://api.themoviedb.org/3/movie/popular?api_key=331809dfe739c8b14228e31bcaf71859"
       )
       .then((response) => {
-        this.movies = response.data.results;
+        const result = response.data.results;
+         result.forEach((item: { [x: string]: number; }) => {
+          item['count'] = 1;
+        })
+        this.movies = result;
       })
       .catch((error) => {
         console.log(error);
@@ -50,14 +54,18 @@ export default Vue.extend({
       .finally(() => console.log("finally"));
   },
   methods: {
-    showPopup(isVisible: boolean, movieIndex: number) {
+    showPopup(isVisible: boolean) {
       this.isVisiblePopup = isVisible;
-      if (movieIndex) {
-        this.movieIndex = movieIndex
-        console.log(movieIndex)
-      }
     },
+    openCurrentItem(currentItem: object) {
+      this.currentItem = currentItem;
+    }
   },
+  computed: {
+    // getCurrentMovie: {
+
+    // }
+  }
 });
 </script>
 

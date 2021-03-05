@@ -14,11 +14,14 @@
       <p class="item__descr">{{ overview }}</p>
       <div class="item__count-wrap">
         <button class="item__counter" @click="countReduce()">-</button>
-        <span class="item__count-text">{{ count }}</span>
+        <span class="item__count-text">{{ currentItem.count }}</span>
         <button class="item__counter" @click="countEnlarge()">+</button>
       </div>
       <div class="item__bottom" v-if="isShowBtnInfo">
-        <ButtonComponent :text="buttonText" v-on:click.native="$emit('show-popup', index)"/>
+        <ButtonComponent
+          :text="buttonText"
+          v-on:click.native="$emit('show-popup'), $emit('show-movie', currentItem)"
+        />
       </div>
     </div>
   </div>
@@ -37,6 +40,7 @@ export default Vue.extend({
     id: Number,
     index: Number,
     title: String,
+    count: Number,
     overview: String,
     poster_path: String,
     isShowBtnInfo: Boolean,
@@ -45,19 +49,40 @@ export default Vue.extend({
   data() {
     return {
       buttonText: "Информация",
-      count: 1,
+      resultCount: 1,
+      currentItem: {
+        id: this.id,
+        index: this.index,
+        title: this.title,
+        count: this.count,
+        overview: this.overview,
+        poster_path: this.poster_path,
+        isShowBtnInfo: this.isShowBtnInfo,
+        isFullScreenView: this.isFullScreenView
+      },
     };
   },
   methods: {
     countReduce() {
-      if (this.count >= 1) {
-          this.count--;
+      if (this.currentItem.count >= 1) {
+        this.currentItem.count--;
       }
+      this.$emit('show-movie', this.currentItem);
     },
     countEnlarge() {
-      this.count++;
+      this.currentItem.count++;
+      this.$emit('show-movie', this.currentItem);
     },
   },
+  // computed: {
+  //   getCurrentCount(): any {
+  //     return this.resultCount = this.currentItem.count;
+  //   },
+  // },
+  // mounted: function() {
+  //   this.getCurrentCount();
+  //   console.log(this.resultCount);
+  // }
 });
 </script>
 
